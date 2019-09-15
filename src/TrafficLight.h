@@ -34,7 +34,7 @@ private:
 // can be either „red“ or „green“. Also, add the private method „void cycleThroughPhases()“. 
 // Furthermore, there shall be the private member _currentPhase which can take „red“ or „green“ as its value. 
 
-enum class TrafficLightPhase { red, green};
+enum  TrafficLightPhase { red, green};
 
 class TrafficLight : public TrafficObject
 {
@@ -59,7 +59,7 @@ private:
     TrafficLightPhase _currentPhase;
     std::condition_variable _condition;
     std::mutex _mutex;
-    std::shared_ptr<MessageQueue<TrafficLightPhase>> _msgQueue;
+    MessageQueue<TrafficLightPhase> _msgQueue;
 };
 
 #endif

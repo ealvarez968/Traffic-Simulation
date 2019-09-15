@@ -53,7 +53,7 @@ void TrafficLight::waitForGreen()
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 		/* Wait until the traffic light is green, received from message queue */
-		auto phase = _msgQueue->receive();
+		auto phase = _msgQueue.receive();
 		if (phase == TrafficLightPhase::green)
 		{
 			return;
@@ -81,7 +81,7 @@ void TrafficLight::cycleThroughPhases()
     // Also, the while-loop should use std::this_thread::sleep_for to wait 1ms between two cycles. 
     std::random_device rd;
     std::mt19937 eng(rd());
-    std::uniform_int_distribution<> distr(4, 6);
+    std::uniform_int_distribution<> distr(4000, 6000);
     
     int cycle_duration = distr(eng);
     
@@ -104,8 +104,8 @@ void TrafficLight::cycleThroughPhases()
             }
 
 
-            auto msg = _currentPhase;
-            auto is_sent = std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::send, _msgQueue, std::move(msg));
+         
+            auto is_sent = std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::send, _msgQueue, std::move(_currentPhase));
             is_sent.wait();
 
             /* Reset stop watch for next cycle */
