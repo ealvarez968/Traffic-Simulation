@@ -50,7 +50,7 @@ void TrafficLight::waitForGreen()
   	while (true)
 	{
 		/* Sleep at every iteration to reduce CPU usage */
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 		/* Wait until the traffic light is green, received from message queue */
 		auto phase = _msgQueue.receive();
@@ -88,9 +88,12 @@ void TrafficLight::cycleThroughPhases()
     auto last_update = std::chrono::system_clock::now();
   
     while(true){
-        long time_since_last_update = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - last_update).count();
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+       //long time_since_last_update = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - last_update).count();
+      	std::this_thread::sleep_for(std::chrono::milliseconds(1));
+      	auto time_since_last_update = std::chrono::duration_cast<std::chrono::milliseconds>
+                                (std::chrono::system_clock::now() - last_update).count();
+		//int durationSinceSwitched = tmpSeconds.count();
+    
         if (time_since_last_update >= cycle_duration)
         {
             /* Toggle current phase of traffic light */
@@ -105,7 +108,7 @@ void TrafficLight::cycleThroughPhases()
 
 
          
-            auto is_sent = std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::send, _msgQueue, std::move(_currentPhase));
+            auto is_sent = std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::send, &_msgQueue, std::move(_currentPhase));
             is_sent.wait();
 
             /* Reset stop watch for next cycle */
